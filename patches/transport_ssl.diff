@@ -1,0 +1,77 @@
+diff --git a/components/tcp_transport/transport_ssl.c b/components/tcp_transport/transport_ssl.c
+index 6d89d6ec4e..48b853e7ce 100644
+--- a/components/tcp_transport/transport_ssl.c
++++ b/components/tcp_transport/transport_ssl.c
+@@ -351,10 +351,72 @@ void esp_transport_ssl_set_tls_version(esp_transport_handle_t t, esp_tls_proto_v
+ }
+ 
+ #ifdef CONFIG_ESP_TLS_PSK_VERIFICATION
++static const int psk_ciphersuites_list[] = {
++#if defined(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED)
++#if defined(MBEDTLS_SSL_HAVE_AES)
++#if defined(MBEDTLS_SSL_HAVE_GCM)
++#if defined(MBEDTLS_MD_CAN_SHA256)
++    MBEDTLS_TLS_PSK_WITH_AES_128_GCM_SHA256,
++#endif /* MBEDTLS_MD_CAN_SHA256 */
++
++#if defined(MBEDTLS_MD_CAN_SHA384)
++    MBEDTLS_TLS_PSK_WITH_AES_256_GCM_SHA384,
++#endif /* MBEDTLS_MD_CAN_SHA384 */
++#endif /* MBEDTLS_SSL_HAVE_GCM */
++
++#if defined(MBEDTLS_SSL_HAVE_CBC)
++#if defined(MBEDTLS_MD_CAN_SHA256)
++    MBEDTLS_TLS_PSK_WITH_AES_128_CBC_SHA256,
++#endif /* MBEDTLS_MD_CAN_SHA256 */
++
++#if defined(MBEDTLS_MD_CAN_SHA384)
++    MBEDTLS_TLS_PSK_WITH_AES_256_CBC_SHA384,
++#endif /* MBEDTLS_MD_CAN_SHA384 */
++
++#if defined(MBEDTLS_MD_CAN_SHA1)
++    MBEDTLS_TLS_PSK_WITH_AES_128_CBC_SHA,
++
++    MBEDTLS_TLS_PSK_WITH_AES_256_CBC_SHA,
++#endif /* MBEDTLS_MD_CAN_SHA1 */
++#endif /* MBEDTLS_SSL_HAVE_CBC */
++#if defined(MBEDTLS_SSL_HAVE_CCM)
++    MBEDTLS_TLS_PSK_WITH_AES_256_CCM,
++    MBEDTLS_TLS_PSK_WITH_AES_256_CCM_8,
++    MBEDTLS_TLS_PSK_WITH_AES_128_CCM,
++    MBEDTLS_TLS_PSK_WITH_AES_128_CCM_8,
++#endif /* MBEDTLS_SSL_HAVE_CCM */
++#endif /* MBEDTLS_SSL_HAVE_AES */
++
++#if defined(MBEDTLS_SSL_HAVE_CAMELLIA)
++#if defined(MBEDTLS_SSL_HAVE_CBC)
++#if defined(MBEDTLS_MD_CAN_SHA256)
++    MBEDTLS_TLS_PSK_WITH_CAMELLIA_128_CBC_SHA256,
++#endif /* MBEDTLS_MD_CAN_SHA256 */
++
++#if defined(MBEDTLS_MD_CAN_SHA384)
++    MBEDTLS_TLS_PSK_WITH_CAMELLIA_256_CBC_SHA384,
++#endif /* MBEDTLS_MD_CAN_SHA384 */
++#endif /* MBEDTLS_SSL_HAVE_CBC */
++
++#if defined(MBEDTLS_SSL_HAVE_GCM)
++#if defined(MBEDTLS_MD_CAN_SHA256)
++    MBEDTLS_TLS_PSK_WITH_CAMELLIA_128_GCM_SHA256,
++#endif /* MBEDTLS_MD_CAN_SHA256 */
++
++#if defined(MBEDTLS_MD_CAN_SHA384)
++    MBEDTLS_TLS_PSK_WITH_CAMELLIA_256_GCM_SHA384,
++#endif /* MBEDTLS_MD_CAN_SHA384 */
++#endif /* MBEDTLS_SSL_HAVE_GCM */
++#endif /* MBEDTLS_SSL_HAVE_CAMELLIA */
++
++#endif /* MBEDTLS_KEY_EXCHANGE_PSK_ENABLED */
++    0};
++
+ void esp_transport_ssl_set_psk_key_hint(esp_transport_handle_t t, const psk_hint_key_t *psk_hint_key)
+ {
+     GET_SSL_FROM_TRANSPORT_OR_RETURN(ssl, t);
+     ssl->cfg.psk_hint_key =  psk_hint_key;
++    ssl->cfg.ciphersuites_list = psk_ciphersuites_list;
+ }
+ #endif
+ 

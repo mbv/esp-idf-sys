@@ -16,10 +16,13 @@ use crate::config::BuildConfig;
 pub const NO_PATCHES: &[&str] = &[];
 
 #[allow(dead_code)]
-pub const V_5_0_PATCHES: &[&str] = &["patches/esp_app_format_weak_v5.0.diff"];
+pub const V_5_0_PATCHES: &[&str] = &["patches/esp_app_format_weak_v5.0.diff", "patches/transport_ssl.diff"];
 
 #[allow(dead_code)]
-pub const V_4_4_PATCHES: &[&str] = &["patches/esp_app_format_weak_v4.4.diff"];
+pub const V_4_4_PATCHES: &[&str] = &["patches/esp_app_format_weak_v4.4.diff", "patches/transport_ssl.diff"];
+
+#[allow(dead_code)]
+pub const SSL_PSK_PATCHES: &[&str] = &["patches/transport_ssl.diff"];
 
 const TOOLS_WORKSPACE_INSTALL_DIR: &str = ".embuild";
 

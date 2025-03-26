@@ -20,11 +20,7 @@ use embuild::{bindgen, build, cargo, cmake, espidf, git, kconfig, path_buf};
 use strum::IntoEnumIterator;
 
 use self::chip::Chip;
-use crate::common::{
-    self, list_specific_sdkconfigs, manifest_dir, sanitize_c_env_vars, sanitize_project_path,
-    setup_clang_env, workspace_dir, EspIdfBuildOutput, EspIdfComponents, InstallDir, NO_PATCHES,
-    V_4_4_PATCHES, V_5_0_PATCHES,
-};
+use crate::common::{self, list_specific_sdkconfigs, manifest_dir, sanitize_c_env_vars, sanitize_project_path, setup_clang_env, workspace_dir, EspIdfBuildOutput, EspIdfComponents, InstallDir, NO_PATCHES, SSL_PSK_PATCHES, V_4_4_PATCHES, V_5_0_PATCHES};
 use crate::config::{BuildConfig, ESP_IDF_GLOB_VAR_PREFIX, ESP_IDF_TOOLS_INSTALL_DIR_VAR};
 
 pub mod chip;
@@ -314,7 +310,7 @@ pub fn build() -> Result<EspIdfBuildOutput> {
         }
         Ok((4, 4, _)) => V_4_4_PATCHES,
         Ok((5, 0, _)) => V_5_0_PATCHES,
-        Ok((5, 1, _)) | Ok((5, 2, _)) | Ok((5, 3, _)) => NO_PATCHES,
+        Ok((5, 1, _)) | Ok((5, 2, _)) | Ok((5, 3, _)) => SSL_PSK_PATCHES,
         Ok((major, minor, patch)) => {
             cargo::print_warning(format_args!(
                 "Building against ESP-IDF version ({major}.{minor}.{patch}) is not officially supported. \
